@@ -76,7 +76,7 @@ func load(jahr int, monat int, tag int) (Schicht, error) {
 }
 
 func initDB() *sql.DB {
-	db, err := sql.Open("sqlite3", "./schichten.db")
+	db, err := sql.Open("sqlite3", "./data/schichten.db")
 	if err != nil {
 		logg.Error("%s", err)
 	}
