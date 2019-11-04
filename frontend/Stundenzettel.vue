@@ -119,9 +119,3 @@ export default {
     }
 }
 </script>
-
-<style>
-.weekend {
-    background-color: orange;
-}
-</style>

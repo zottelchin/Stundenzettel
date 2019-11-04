@@ -1,13 +1,13 @@
 FROM node AS Frontend
-ADD ./frontend /frontend
-WORKDIR /frontend
-RUN npm install -g parcel-bundler
+ADD ./frontend /var/app
+WORKDIR /var/app/
+RUN npm i -g parcel-bundler --unsafe-perm
 RUN npm install && \
     parcel build index.html
 
 FROM golang AS Backend
 ADD *.go /go/src/github.com/zottelchin/stundenzettel/
-COPY --from=Frontend /frontend/dist /go/src/github.com/zottelchin/stundenzettel/frontend/dist
+COPY --from=Frontend /var/app/dist /go/src/github.com/zottelchin/stundenzettel/frontend/dist
 WORKDIR /go/src/github.com/zottelchin/stundenzettel
 RUN go get github.com/go-bindata/go-bindata/... && \
     /go/bin/go-bindata ./frontend/dist/... && \
