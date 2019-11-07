@@ -17,7 +17,6 @@ RUN CGO_ENABLED=1 GOOS=linux go build -a -ldflags '-extldflags "-static" -s' -in
 FROM scratch
 COPY --from=Backend /go/src/github.com/zottelchin/stundenzettel/Stundenzettel /Stundenzettel
 ENV GIN_MODE=release
-RUN mkdir /data
 WORKDIR /
 EXPOSE 8899
 VOLUME [ "/data" ]
