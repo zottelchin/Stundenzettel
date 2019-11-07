@@ -1,10 +1,13 @@
 <template>
     <div class="container">
-        <h1 class="title is-1 has-text-centered" style="display: flex; justify-content: center;align-items: center; margin-top: 1rem">
+        <h1 class="title is-1 has-text-centered no-print" style="display: flex; justify-content: center;align-items: center; margin-top: 1rem">
             <img src="https://img.icons8.com/dusk/58/000000/clock.png" style="margin-right: 1rem">
             Stundenzettel
         </h1>
-        <div class="level">
+        <h1 class="print">
+            Stundenzettel: {{ monat(this.$route.params.month) }} {{ this.$route.params.year }}
+        </h1>
+        <div class="level no-print">
             <div class="level-item level-left">
                 <router-link class="button" :to="prev()">
                     vorheriger Monat
@@ -19,6 +22,7 @@
                 </router-link>
             </div>
         </div>
+        <span style="float: right; font-size: 6pt !important; margin-bottom: 7px;" class="print">Stand: {{ (new Date()).toLocaleString() }}</span>
         <table class="table is-fullwidth">
             <thead>
                 <tr>
@@ -26,36 +30,21 @@
                     <th>Arbeitsbegin</th>
                     <th>Arbeitsende</th>
                     <th>Pause</th>
-                    <th></th>
                     <th>Arbeitszeit</th>
+                    <th width="80px" class="no-print"></th>
                 </tr>
             </thead>
-            <tbody>
-                <tr v-for="day in tageImMonat" :class="{ weekend: day.weekend}" :key="day.day">
-                    <td style="letter-spacing: 1px;">
-                        <span style="width: 30px; display: inline-block;">
-                            {{ day.weekday }}.
-                        </span>
-                         {{ day.day }}.{{ day.month }}.{{day.year}}
-                    </td>
-                    <td> <input type="time" v-model="stunden[day.day].Beginn"> </td>
-                    <td> <input type="time" v-model="stunden[day.day].Ende"> </td>
-                    <td> <input type="time" v-model="stunden[day.day].Pause"> </td>
-                    <td><i class="ri-save-3-line" @click="save(day.day)"></i></td>
-                    <td>{{ isNaN(+stunden[day.day].Ende.split(':')[0] + (+stunden[day.day].Ende.split(':')[1] / 60) - stunden[day.day].Beginn.split(':')[0] - (+stunden[day.day].Beginn.split(':')[1] / 60) - stunden[day.day].Pause.split(':')[0] - (+stunden[day.day].Pause.split(':')[1] / 60)) ? "": +stunden[day.day].Ende.split(':')[0] + (+stunden[day.day].Ende.split(':')[1] / 60) - stunden[day.day].Beginn.split(':')[0] - (+stunden[day.day].Beginn.split(':')[1] / 60) - stunden[day.day].Pause.split(':')[0] - (+stunden[day.day].Pause.split(':')[1] / 60) }}</td>
-                </tr>
-            </tbody>
+                <tag v-for="day in tageImMonat" :tag="day" :key="day.day" />
         </table>
     </div>
 </template>
 
 <script>
+import tag from "./Tag.vue";
+
 export default {
-    data() {
-        setTimeout(() => this.laden())
-        return {
-            stunden: {}
-        }
+    components: {
+        tag
     },
     methods: {
         monat(zahl) {
@@ -77,10 +66,6 @@ export default {
         wochentag(num) {
             var tag = ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"];
             return tag[num];
-        },
-        async laden() {
-            let r = await api.GET("/" + this.$route.params.year + "/" + this.$route.params.month)
-            this.stunden = r.content;
         },
         async save(day) {
             console.log("save.." +day);

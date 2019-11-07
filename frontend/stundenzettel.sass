@@ -1,2 +1,22 @@
 .weekend
     background-color: orange
+.print
+    display: none
+
+@media print
+    table
+        font-size: 9pt !important
+        line-height: 14px !important
+    .no-print
+        display: none !important
+    .print
+        display: inline !important
+        font-size: 24px !important
+        font-weight: bold !important
+        display: flex !important
+        justify-content: center !important
+    h1
+        margin-bottom: 1rem
+    .date
+        position: fixed
+        bottom: 0 

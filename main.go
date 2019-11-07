@@ -3,7 +3,6 @@ package main
 import (
 	"database/sql"
 	"strconv"
-	"time"
 
 	"codeberg.org/momar/logg"
 
@@ -17,13 +16,14 @@ var database = initDB()
 
 func main() {
 	r := gin.Default()
-	r.GET("/api/v1/:year/:month", monatsübersicht)
+	r.GET("/api/v1/:year/:month/:day", tagAbrufen)
 	r.POST("/api/v1/:year/:month/:day", tagSpeichern)
 	parcelServe.Serve("frontend", r, AssetNames(), MustAsset)
 	r.Run(":8899")
 }
 
 type Schicht struct {
+	ID     int
 	Beginn string
 	Ende   string
 	Pause  string
@@ -43,17 +43,13 @@ func tagSpeichern(c *gin.Context) {
 	c.Status(201)
 }
 
-func monatsübersicht(c *gin.Context) {
+func tagAbrufen(c *gin.Context) {
 	year, _ := strconv.Atoi(c.Param("year"))
 	month, _ := strconv.Atoi(c.Param("month"))
-	days := time.Date(year, time.Month(month+1), 0, 0, 0, 0, 0, time.Local).Day()
-	result := map[int]Schicht{}
-	for i := 1; i <= days; i++ {
-		tmp, err := load(year, month, i)
-		if err != nil {
-			logg.Error("%s", err)
-		}
-		result[i] = tmp
+	day, _ := strconv.Atoi(c.Param("day"))
+	result, err := load(year, month, day)
+	if err != nil {
+		logg.Error("%s", err)
 	}
 	c.JSON(200, result)
 }
@@ -66,13 +62,21 @@ func save(jahr int, monat int, tag int, v Schicht) error {
 	return nil
 }
 
-func load(jahr int, monat int, tag int) (Schicht, error) {
-	tmp := Schicht{}
-	err := database.QueryRow("Select Beginn, Ende, Pause From Schichten Where Jahr = ? And Monat = ? And Tag = ?", jahr, monat, tag).Scan(&tmp.Beginn, &tmp.Ende, &tmp.Pause)
+func load(jahr int, monat int, tag int) ([]Schicht, error) {
+	res := []Schicht{}
+	rows, err := database.Query("Select id, Beginn, Ende, Pause From Schichten Where Jahr = ? And Monat = ? And Tag = ?", jahr, monat, tag)
 	if err != nil {
-		return Schicht{}, err
+		return []Schicht{}, err
 	}
-	return tmp, nil
+	for rows.Next() {
+		tmp := Schicht{}
+		err = rows.Scan(&tmp.ID, &tmp.Beginn, &tmp.Ende, &tmp.Pause)
+		if err != nil {
+			logg.Error("%s", err)
+		}
+		res = append(res, tmp)
+	}
+	return res, nil
 }
 
 func initDB() *sql.DB {
