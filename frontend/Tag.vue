@@ -5,10 +5,10 @@
         <span style="width: 30px; display: inline-block;">{{ tag.weekday }}.</span>
         {{ tag.day }}.{{ tag.month }}.{{tag.year}}
       </td>
-      <td>9:00 Uhr</td>
-      <td>17:00 Uhr</td>
-      <td>0:30 h</td>
-      <td>7:30 h</td>
+      <td>{{ zeit.Beginn}} Uhr</td>
+      <td>{{ zeit.Ende }} Uhr</td>
+      <td>{{ zeit.Pause }} h</td>
+      <td>{{ +zeit.Ende.split(':')[0] + (+zeit.Ende.split(':')[1] / 60) - zeit.Beginn.split(':')[0] - (+zeit.Beginn.split(':')[1] / 60) - zeit.Pause.split(':')[0] - (+zeit.Pause.split(':')[1] / 60) }} h</td>
       <td class="no-print">
           <i class="ri-delete-bin-line"></i>
       </td>
