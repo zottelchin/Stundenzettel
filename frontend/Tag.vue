@@ -1,5 +1,5 @@
 <template>
-  <tbody v-if="stunden.length != 0">
+  <tbody v-if="stunden.length != 0" style="border-top: 2px solid #888888">
     <tr :class="{ weekend: tag.weekend}" v-for="(zeit, index) in stunden" :key="zeit.ID">
       <td style="letter-spacing: 1px; vertical-align: middle;" v-if="index == 0" :rowspan="stunden.length + 1">
         <span style="width: 30px; display: inline-block;">{{ tag.weekday }}.</span>
@@ -8,7 +8,7 @@
       <td>{{ zeit.Beginn}} Uhr</td>
       <td>{{ zeit.Ende }} Uhr</td>
       <td>{{ zeit.Pause }} h</td>
-      <td>{{ +zeit.Ende.split(':')[0] + (+zeit.Ende.split(':')[1] / 60) - zeit.Beginn.split(':')[0] - (+zeit.Beginn.split(':')[1] / 60) - zeit.Pause.split(':')[0] - (+zeit.Pause.split(':')[1] / 60) }} h</td>
+      <td>{{ ((+zeit.Ende.split(':')[0] * 60) + zeit.Ende.split(':')[1] - (+zeit.Beginn.split(':')[0] * 60) - +zeit.Beginn.split(':')[1] - (+zeit.Pause.split(':')[0] * 60) - +zeit.Pause.split(':')[1]) /60 }} h</td>
       <td class="no-print">
           <i class="ri-delete-bin-line"></i>
       </td>
@@ -31,7 +31,7 @@
       </td>
     </tr>
   </tbody>
-  <tbody v-else >
+  <tbody v-else style="border-top: 2px solid #888888">
     <tr :class="{ weekend: tag.weekend}">
       <td style="letter-spacing: 1px;">
         <span style="width: 30px; display: inline-block;">{{ tag.weekday }}.</span>
