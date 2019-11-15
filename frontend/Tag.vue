@@ -8,7 +8,7 @@
       <td>{{ zeit.Beginn}} Uhr</td>
       <td>{{ zeit.Ende }} Uhr</td>
       <td>{{ zeit.Pause }} h</td>
-      <td>{{ ((+zeit.Ende.split(':')[0] * 60) + zeit.Ende.split(':')[1] - (+zeit.Beginn.split(':')[0] * 60) - +zeit.Beginn.split(':')[1] - (+zeit.Pause.split(':')[0] * 60) - +zeit.Pause.split(':')[1]) /60 }} h</td>
+      <td>{{ Arbeitszeit(zeit.Beginn, zeit.Ende, zeit.Pause) }} h</td>
       <td class="no-print">
           <i class="ri-delete-bin-line"></i>
       </td>
@@ -17,7 +17,7 @@
       <td v-show="edit"><input type="time" v-model="beginn"> Uhr</td>
       <td v-show="edit"><input type="time" v-model="ende"> Uhr</td>
       <td v-show="edit"><input type="time" v-model="pause"> Stunden</td>
-      <td v-show="edit">{{ isNaN(+ende.split(':')[0] + (+ende.split(':')[1] / 60) - beginn.split(':')[0] - (+beginn.split(':')[1] / 60) - pause.split(':')[0] - (+pause.split(':')[1] / 60)) ? "": +ende.split(':')[0] + (+ende.split(':')[1] / 60) - beginn.split(':')[0] - (+beginn.split(':')[1] / 60) - pause.split(':')[0] - (+pause.split(':')[1] / 60) }}</td>
+      <td v-show="edit">{{ Arbeitszeit(beginn, ende, pause) }}</td>
       <td v-show="edit" class="no-print">
           <i class="ri-save-2-line" @click="save()"></i>
           <i class="ri-close-circle-line" @click="edit = false"></i>
@@ -40,7 +40,7 @@
       <td v-show="edit"><input type="time" v-model="beginn"> Uhr</td>
       <td v-show="edit"><input type="time" v-model="ende"> Uhr</td>
       <td v-show="edit"><input type="time" v-model="pause"> Stunden</td>
-      <td v-show="edit">{{ isNaN(+ende.split(':')[0] + (+ende.split(':')[1] / 60) - beginn.split(':')[0] - (+beginn.split(':')[1] / 60) - pause.split(':')[0] - (+pause.split(':')[1] / 60)) ? "": +ende.split(':')[0] + (+ende.split(':')[1] / 60) - beginn.split(':')[0] - (+beginn.split(':')[1] / 60) - pause.split(':')[0] - (+pause.split(':')[1] / 60) }}</td>
+      <td v-show="edit">{{ Arbeitszeit(beginn, ende, pause) }}</td>
       <td v-show="edit" class="no-print">
           <i class="ri-save-2-line" @click="save()"></i>
           <i class="ri-close-circle-line" @click="edit = false"></i>
@@ -88,6 +88,19 @@ export default {
             let r = await api.GET("/" + encodeURIComponent(this.tag.year) + "/" + encodeURIComponent(this.tag.month) + "/" + encodeURIComponent(this.tag.day));
             this.stunden = (r.ok ? r.content : [])
             this.stunden.length != 0 ? console.log(this.stunden) : "";
+        },
+        Arbeitszeit(b, e, p) {
+          var h = +e.split(':')[0] - +b.split(':')[0] - +p.split(':')[0];
+          var m = +e.split(':')[1] - +b.split(':')[1] - +p.split(':')[1];
+          while(m < 0) {
+            h--;
+            m += 60;
+          }
+          while(m >= 60) {
+            h++;
+            m -= 60;
+          }
+          return h + ":" + m
         }
   }
 };
