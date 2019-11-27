@@ -10,7 +10,7 @@
       <td>{{ zeit.Pause }} h</td>
       <td>{{ Arbeitszeit(zeit.Beginn, zeit.Ende, zeit.Pause) }} h</td>
       <td class="no-print">
-          <i class="ri-delete-bin-line"></i>
+          <i class="ri-delete-bin-line" @click="del(zeit.ID)"></i>
       </td>
     </tr>
     <tr :class="{ weekend: tag.weekend}" class="no-print">
@@ -101,6 +101,11 @@ export default {
             m -= 60;
           }
           return h + ":" + m
+        },
+        async del(id) {
+          let r = await api.DELETE ("/" + encodeURIComponent(id));
+          if (!r.ok) alert(r.status);
+          else this.load();
         }
   }
 };

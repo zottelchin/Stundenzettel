@@ -18,6 +18,7 @@ func main() {
 	r := gin.Default()
 	r.GET("/api/v1/:year/:month/:day", tagAbrufen)
 	r.POST("/api/v1/:year/:month/:day", tagSpeichern)
+	r.DELETE("/api/v1/:id", deleteByID)
 	parcelServe.Serve("frontend", r, AssetNames(), MustAsset)
 	r.Run(":8899")
 }
@@ -96,4 +97,18 @@ func initDB() *sql.DB {
 		logg.Error("%s", err)
 	}
 	return db
+}
+
+func deleteByID(c *gin.Context) {
+	id, err := strconv.Atoi(c.Param("id"))
+	if err !=  nil || id < 0 {
+		c.Status(500)
+		return
+	}
+	_, err = database.Exec("Delete From Schichten where id = ?", id)
+	if err != nil {
+		c.Status(500)
+		return
+	}
+	c.Status(200)
 }
