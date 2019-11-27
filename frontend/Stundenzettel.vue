@@ -26,7 +26,7 @@
         <table class="table is-fullwidth">
             <thead>
                 <tr>
-                    <th>Datum</th>
+                    <th width="170px">Datum</th>
                     <th>Arbeitsbegin</th>
                     <th>Arbeitsende</th>
                     <th>Pause</th>

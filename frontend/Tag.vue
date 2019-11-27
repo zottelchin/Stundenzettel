@@ -1,9 +1,10 @@
 <template>
   <tbody v-if="stunden.length != 0" style="border-top: 2px solid #888888">
     <tr :class="{ weekend: tag.weekend}" v-for="(zeit, index) in stunden" :key="zeit.ID">
-      <td style="letter-spacing: 1px; vertical-align: middle;" v-if="index == 0" :rowspan="stunden.length + 1">
+      <td style="letter-spacing: 1px; vertical-align: middle;" v-if="index == 0" :rowspan="stunden.length">
         <span style="width: 30px; display: inline-block;">{{ tag.weekday }}.</span>
         {{ tag.day }}.{{ tag.month }}.{{tag.year}}
+        <span @click="edit = true" class="no-print" v-show="!edit"><i class="ri-add-circle-line" title="Zeit erfassen"></i></span>
       </td>
       <td>{{ zeit.Beginn}} Uhr</td>
       <td>{{ zeit.Ende }} Uhr</td>
@@ -22,13 +23,6 @@
           <i class="ri-save-2-line" @click="save()"></i>
           <i class="ri-close-circle-line" @click="edit = false"></i>
       </td>
-      <td v-show="!edit"></td>
-      <td v-show="!edit"></td>
-      <td v-show="!edit"></td>
-      <td v-show="!edit"></td>
-      <td v-show="!edit" @click="edit = true" class="no-print">
-        <i class="ri-add-circle-line" title="Zeit erfassen"></i>
-      </td>
     </tr>
   </tbody>
   <tbody v-else style="border-top: 2px solid #888888">
@@ -36,6 +30,7 @@
       <td style="letter-spacing: 1px;">
         <span style="width: 30px; display: inline-block;">{{ tag.weekday }}.</span>
         {{ tag.day }}.{{ tag.month }}.{{tag.year}}
+        <span @click="edit = true" class="no-print" v-show="!edit"><i class="ri-add-circle-line" title="Zeit erfassen"></i></span>
       </td>
       <td v-show="edit"><input type="time" v-model="beginn"> Uhr</td>
       <td v-show="edit"><input type="time" v-model="ende"> Uhr</td>
@@ -49,9 +44,7 @@
       <td v-show="!edit"></td>
       <td v-show="!edit"></td>
       <td v-show="!edit"></td>
-      <td v-show="!edit" @click="edit = true" class="no-print">
-        <i class="ri-add-circle-line no-print" title="Zeit erfassen"></i>
-      </td>
+      <td v-show="!edit"></td>
     </tr>
   </tbody>
 </template>
